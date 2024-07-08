@@ -5,7 +5,7 @@
     <section class="bg-[#E9F1FA] dark:bg-gray-900">
         <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
             <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Edit Mill Data</h2>
-            <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Date: {{ mill_data.date }}</h2>
+            <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Date: {{ mill_data.date.strftime('%d-%b-%Y') }}</h2>
             <form action="{{ url_for('update_data', data_id=mill_data.id) }}" method="post">
                 <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                     <div class="sm:col-span-2">
@@ -54,14 +54,14 @@
                         <label for="Labour-Dscri" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Labour-Dscription
                         </label>
-                        <select id="category" name="labour_dscri" value="{{ mill_data.labour_dscri }}" required=""
+                        <select id="category" name="labour_dscri" required=""
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option selected="">Select Lobour</option>
-                            <option value="Bhim">Bhim</option>
-                            <option value="Viswa">Viswa</option>
-                            <option value="Viswa+Bhim">Viswa+Bhim</option>
-                            <option value="Null">Null</option>
-                            <option value="others..">others..</option>
+                            <option value="Bhim"  {% if "Bhim"==mill_data.labour_dscri %}selected{% endif %}>Bhim</option>
+                            <option value="Viswa"  {% if "Viswa"==mill_data.labour_dscri %}selected{% endif %}>Viswa</option>
+                            <option value="Viswa+Bhim"  {% if "Viswa+Bhim"==mill_data.labour_dscri %}selected{% endif %}>Viswa+Bhim</option>
+                            <option value="Null"  {% if "Null" ==mill_data.labour_dscri %}selected{% endif %}>Null</option>
+                            <option value="others.."  {% if "others.." ==mill_data.labour_dscri %}selected{% endif %}>others..</option>
                         </select>
                     </div>
                     <div class="w-full">

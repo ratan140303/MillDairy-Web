@@ -161,7 +161,7 @@
                         <thead class="whitespace-nowrap text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky top-0 z-50">
                             <tr>
                                 <th scope="col" class="px-6 py-3"> SI No.</th>
-                                <th scope="col" class="px-6 py-3"> Date-YY-MM-DD </th>
+                                <th scope="col" class="px-6 py-3"> Date</th>
                                 <th scope="col" class="px-6 py-3">T-Credit </th>
                                 <th scope="col" class="px-6 py-3">T-Debit </th>
                                 <th scope="col" class="px-6 py-3">M-Credit</th>
@@ -186,7 +186,7 @@
                             {% for mill_dairy_data in mill_dairy_datas %}
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <td class="px-6 py-4">{{ loop.index }}</td>
-                                <td class="px-6 py-4">{{ mill_dairy_data.date }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ mill_dairy_data.date.strftime('%d-%b-%Y') }}</td>
                                 <!--Total Credits -->
                                 <td class="px-6 py-4">{{ mill_dairy_data.total_credit }}</td>
                                 <td class="px-6 py-4">{{ mill_dairy_data.total_debit }}</td>
