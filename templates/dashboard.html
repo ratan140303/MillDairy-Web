@@ -8,10 +8,11 @@
                 <h1 class="m-10 text-center mb-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Mill
                     Dairy Anylasis of {{month_name}} {{year}} </h1>
                 <!-- Anylasis Data -->
-                <div class="m-2 md:m-10 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-900 dark:text-red-400" role="alert">
+                <div class="m-2 md:m-10 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-900 dark:text-red-400"
+                    role="alert">
                     {% with messages = get_flashed_messages() %}
                     {% if messages %}
-                        <p class="font-medium m-2 p-4">{{ messages[0] }}</p>
+                    <p class="font-medium m-2 p-4">{{ messages[0] }}</p>
                     {% endif %}
                     {% endwith %}
                 </div>
@@ -20,34 +21,45 @@
                         class="block md:w-[30%] max-w-sm m-2 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">All Credits
                         </h5>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Total Credit : Rs. {{ total_t_credit }}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Total Credit : Rs. {{ total_t_credit }}
+                        </p>
                         <p class="font-normal text-gray-700 dark:text-gray-400">Mill Credit : Rs. {{total_m_credit}}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Flour Credit : {{ total_flour_weight }}Kg - Rs.{{ total_flour_rs }}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Oil Credit : {{ total_oil_weight }}Kg - Rs.{{ total_oil_rs }}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Khari Credit :{{total_khari_weight}}Kg - Rs.{{total_khari_rs}}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Flour Credit : {{ total_flour_weight
+                            }}Kg - Rs.{{ total_flour_rs }}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Oil Credit : {{ total_oil_weight }}Kg -
+                            Rs.{{ total_oil_rs }}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Khari Credit :{{total_khari_weight}}Kg -
+                            Rs.{{total_khari_rs}}</p>
                     </div>
                     <div
                         class="block md:w-[30%] max-w-sm m-2 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">All Debit</h5>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Total Debit : Rs. {{ total_t_debit }}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Mill Debit : Rs. {{ total_mill_debit }}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">House Debit : Rs. {{ total_home_debit }}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Total Debit : Rs. {{ total_t_debit }}
+                        </p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Mill Debit : Rs. {{ total_mill_debit }}
+                        </p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">House Debit : Rs. {{ total_home_debit }}
+                        </p>
                         <p class="font-normal text-gray-700 dark:text-gray-400">Labour : Rs. {{ total_labour_rs }}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Gehum : {{ total_gehum_weight }}Kg - Rs. {{ total_gehum_rs }}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Gehum : {{ total_gehum_weight }}Kg - Rs.
+                            {{ total_gehum_rs }}</p>
                     </div>
                     <div
                         class="block md:w-[30%] max-w-sm m-2 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Factors</h5>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Saving : Rs.{{ total_t_credit - total_t_debit }}</p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">T-Income by Mill : Rs.{{total_t_credit - total_mill_debit - total_labour_rs - total_gehum_rs}} </p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Saving : Rs.{{ total_t_credit -
+                            total_t_debit }}</p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">T-Income by Mill : Rs.{{total_t_credit -
+                            total_mill_debit - total_labour_rs - total_gehum_rs}} </p>
                         <p class="font-normal text-gray-700 dark:text-gray-400">Viswa : Rs. </p>
-                        <p class="font-normal text-gray-700 dark:text-gray-400">Bihm  : Rs. </p>
+                        <p class="font-normal text-gray-700 dark:text-gray-400">Bihm : Rs. </p>
                         <p class="font-normal text-gray-700 dark:text-gray-400">Bihm+Viswa : Rs. </p>
                     </div>
                 </div>
 
                 <!-- Table heading -->
-                <div class="m-1 md:m-10 flex flex-col md:flex-row items-center justify-between space-y-5 md:space-y-0 md:space-x-4 p-4">
+                <div
+                    class="m-1 md:m-10 flex flex-col md:flex-row items-center justify-between space-y-5 md:space-y-0 md:space-x-4 p-4">
                     <!-- search Bar -->
                     <div class="w-full md:w-1/3">
                         <form class="flex items-center" action="/dashboard" method="get">
@@ -62,12 +74,15 @@
                                             clip-rule="evenodd" />
                                     </svg>
                                 </div>
-                                <input type="text" name="query" id="simple-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
+                                <input type="text" name="query" id="simple-search"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    placeholder="Search" required="">
                             </div>
                         </form>
                     </div>
 
-                    <div class="w-full md:w-auto flex flex-col md:flex-row space-y-5 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                    <div
+                        class="w-full md:w-auto flex flex-col md:flex-row space-y-5 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                         <!-- Add Today Data -->
                         <button type="button"
                             class="flex items-center justify-center text-white bg-blue-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
@@ -158,10 +173,12 @@
                 <!-- Table Here -->
                 <div class="overflow-x-auto m-2 md:m-10 h-[450px]">
                     <table class="w-full text-left text-gray-500 dark:text-gray-400">
-                        <thead class="whitespace-nowrap text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky top-0 z-50">
+                        <thead
+                            class="whitespace-nowrap text-gray-700 uppercase bg-[#bdbdbd] dark:bg-gray-700 dark:text-gray-400 sticky top-0 z-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3"> SI No.</th>
+                                <!-- <th scope="col" class="px-6 py-3"> SI No.</th> -->
                                 <th scope="col" class="px-6 py-3"> Date</th>
+                                <th scope="col" class="px-6 py-3">Edit</th>
                                 <th scope="col" class="px-6 py-3">T-Credit </th>
                                 <th scope="col" class="px-6 py-3">T-Debit </th>
                                 <th scope="col" class="px-6 py-3">M-Credit</th>
@@ -179,14 +196,23 @@
                                 <th scope="col" class="px-6 py-3">Labour-Rs</th>
                                 <th scope="col" class="px-6 py-3">Gehum-Kg</th>
                                 <th scope="col" class="px-6 py-3">Gehum-Rs</th>
-                                <th scope="col" class="px-6 py-3">Edit</th>
+                                
                             </tr>
                         </thead>
                         <tbody class="text-[18px]">
                             {% for mill_dairy_data in mill_dairy_datas %}
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td class="px-6 py-4">{{ loop.index }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ mill_dairy_data.date.strftime('%d-%b-%Y') }}</td>
+                            <tr
+                                class="odd:bg-white even:bg-[#f3f3f3] hover:bg-yellow-100 border-b dark:odd:bg-gray-500 dark:even:bg-gray-600 dark:border-gray-700 dark:text-white dark:hover:bg-[#fb7185]">
+                                <!-- <td class="px-6 py-4">{{ loop.index }}</td> -->
+                                <td class="px-6 py-4 whitespace-nowrap">{{ mill_dairy_data.date.strftime('%d-%b-%Y') }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a href="{{ url_for('edit_data', data_id=mill_dairy_data.id) }}">
+                                        <svg class="fill-gray-500 h-6 dark:fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                                            <path d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" />
+                                        </svg> Edit
+                                    </a>
+                                </td>
                                 <!--Total Credits -->
                                 <td class="px-6 py-4">{{ mill_dairy_data.total_credit }}</td>
                                 <td class="px-6 py-4">{{ mill_dairy_data.total_debit }}</td>
@@ -198,7 +224,7 @@
                                 <td class="px-6 py-4">{{ mill_dairy_data.oil_rs }}</td>
                                 <td class="px-6 py-4">{{ mill_dairy_data.khari_weight }}</td>
                                 <td class="px-6 py-4">{{ mill_dairy_data.khari_rs }}</td>
-                                
+
                                 <!-- Debit -->
                                 <td class="px-6 py-4">{{ mill_dairy_data.mill_debit }}</td>
                                 <td class="px-6 py-4">{{ mill_dairy_data.mill_dscri }}</td>
@@ -208,7 +234,6 @@
                                 <td class="px-6 py-4">{{ mill_dairy_data.labour_rs }}</td>
                                 <td class="px-6 py-4">{{ mill_dairy_data.gehum_weight }}</td>
                                 <td class="px-6 py-4">{{ mill_dairy_data.gehum_rs }}</td>
-                                <td class="px-6 py-4"><a href="{{ url_for('edit_data', data_id=mill_dairy_data.id) }}">Edit</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
