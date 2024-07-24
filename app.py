@@ -1,6 +1,6 @@
-import atexit
-from flask import Flask, render_template, redirect, request, flash, session, send_file
+from flask import Flask, render_template, redirect, request, flash, session, send_file, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
 import bcrypt
 import datetime
 import pandas as pd
@@ -89,6 +89,44 @@ class MillData(db.Model):
         self.gehum_rs = gehum_rs
         self.total_credit = int(mill_credit) + int(flour_rs) + int(oil_rs) + int(khari_rs)
         self.total_debit = int(mill_debit) + int(home_debit) + int(gehum_rs) + int(labour_rs)
+
+# Create Database for contact us
+class Customer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.Date, default=datetime.datetime.now)
+    name = db.Column(db.String(100), nullable=False)
+    village = db.Column(db.String(100), nullable=False)
+
+    user = db.relationship('User', backref=db.backref('customers', lazy=True))
+    customer_details = db.relationship('CustomerDetail', backref='customer', lazy=True, cascade='all, delete-orphan')
+
+    def __init__(self, user_id, name, village):
+        self.user_id = user_id
+        self.name = name
+        self.village = village
+
+# Create Database for contact us
+class CustomerDetail(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    custom_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+    date = db.Column(db.String(100), nullable=False)
+    dues = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, custom_id, date, dues, description):
+        self.custom_id = custom_id
+        self.date = date
+        self.dues = dues
+        self.description = description
+
+    @property
+    def customer_name(self):
+        return self.customer.name
+
+    @property
+    def customer_village(self):
+        return self.customer.village
  
 # Create Database for contact us
 class Contactus(db.Model):
@@ -404,8 +442,223 @@ def download_excel():
     else:
         flash('You need to login first.', 'error')
         return redirect('/login')
+
+#Customer
+@app.route('/customers', methods=['GET', 'POST'])
+def customers():
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        customers = Customer.query.filter(Customer.user_id == user.id).all()
+        # Create a dictionary to store total dues for each customer
+        customer_dues = {}
+
+        for customer in customers:
+            customer_details = CustomerDetail.query.filter(CustomerDetail.custom_id == customer.id).all()
+            total_dues = sum(detail.dues for detail in customer_details)
+            customer_dues[customer.id] = total_dues
+        
+
+        query = request.args.get('query')
+        if query:
+            query_lower = query.lower()
+            customers = [
+                data for data in customers if any(
+                    query_lower in str(getattr(data, attr, '')).lower() for attr in vars(data)
+                )
+            ]
+
+        # Recalculate customer dues for filtered customers
+        customer_dues = {}
+        for customer in customers:
+            customer_details = CustomerDetail.query.filter(CustomerDetail.custom_id == customer.id).all()
+            total_dues = sum(detail.dues for detail in customer_details)
+            customer_dues[customer.id] = total_dues    
+        
+        return render_template('customers.html', title='Customer', current_page='customer', customers=customers, customer_dues=customer_dues)
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
+
+
+#add_new_data
+@app.route('/add_new_custom_data', methods=['GET', 'POST'])
+def add_new_custom_data():
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        date = datetime.datetime.now().strftime('%d-%b-%Y')
+        if request.method == 'POST':
+            customer_name = request.form['customer_name']
+            village = request.form['village']
+
+            new_data = Customer(user_id=user.id, name=customer_name, village=village)
+            db.session.add(new_data)
+            db.session.commit()
+            flash('Added successful.', 'success')
+            return redirect('/customers')
+
+        return render_template('add_new_custom.html', title='Add data', current_page='customer', date=date)
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
+
+@app.route('/download_excel_customer', methods=['GET'])
+def download_excel_customer():
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        customers = Customer.query.filter(Customer.user_id == user.id).all()
+
+        # Create a DataFrame from the query results
+        data = [{
+            "Date": data.date,
+            "Name": data.name,
+            "Village": data.village,
+            "Dues": 100
+        } for data in customers]
+
+        df = pd.DataFrame(data)
+
+        # Convert DataFrame to Excel
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Customer Data')
+        
+        output.seek(0)
+        
+        return send_file(output, download_name=f'Customers.xlsx', as_attachment=True)
+
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
+
+
+@app.route('/delete_customer/<int:id>')
+def delete_customer(id):
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        if not user:
+            flash('User not found.', 'error')
+            return redirect('/login')
+        
+        customer = Customer.query.filter_by(id=id, user_id=user.id).first()
+        if not customer:
+            flash('Customer not found.', 'error')
+            return redirect('/customers')
+
+        try:
+            db.session.delete(customer)
+            db.session.commit()
+            flash('Customer deleted successfully.', 'success')
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash('An error occurred while deleting the customer. Please try again.', 'error')
+            print(f"SQLAlchemyError: {e}")
+        
+        return redirect('/customers')
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
+
+#Customer
+@app.route('/customers_detail/<int:id>', methods=['GET', 'POST'])
+def customers_detail(id):
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        customers = Customer.query.filter(Customer.user_id == user.id, Customer.id == id).first()
+        customer_details = CustomerDetail.query.filter(CustomerDetail.custom_id == customers.id).all()
+
+        total_dues = sum(data.dues for data in customer_details)
+
+        return render_template('customers_detail.html', title='Customer Details', current_page='customer', customers=customers, customer_details=customer_details, total_dues=total_dues)
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
     
+#add_new_data
+@app.route('/add_custom_detail/<int:custom_id>', methods=['GET', 'POST'])
+def add_custom_detail(custom_id):
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        customers = Customer.query.filter(Customer.user_id == user.id, Customer.id == custom_id).first()
+        date = datetime.datetime.now().strftime('%d-%b-%Y')
+        if request.method == 'POST':
+            date = request.form['date']
+            dues = request.form['dues']
+            description = request.form['description']
+
+            new_data = CustomerDetail(custom_id=custom_id, date=date, dues=dues, description=description)
+            db.session.add(new_data)
+            db.session.commit()
+            flash('Added successful.', 'success')
+            return redirect(url_for('customers_detail', id=custom_id))
+
+
+        return render_template('add_custom_detail.html', title='Add data', current_page='customer', date=date, customers=customers)
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
     
+@app.route('/edit_custom_detail/<int:custom_id>/<int:id>', methods=['GET', 'POST'])
+def edit_custom_detail(custom_id, id):
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        customers = Customer.query.filter(Customer.user_id == user.id, Customer.id == custom_id).first()
+        customer_details = CustomerDetail.query.filter_by(id=id, custom_id=custom_id).first()
+        date = datetime.datetime.now().strftime('%d-%b-%Y')
+        
+        if not customers:
+            flash('Data not found or you do not have permission to edit this data.', 'error')
+            return redirect('/customers')
+        
+        if not customer_details:
+            flash('Data not found or you do not have permission to edit this data.', 'error')
+            return redirect(url_for('customers_detail', id=custom_id))
+        
+        if request.method == 'POST':
+            customer_details.date = request.form['date']
+            customer_details.dues = request.form['dues']
+            customer_details.description = request.form['description']
+
+
+            db.session.commit()
+            flash('Data updated successfully.', 'success')
+            return redirect(url_for('customers_detail', id=custom_id))
+        return render_template('edit_custom_detail.html', title='Update data', current_page='customer', date=date, customers=customers, customer_details=customer_details)
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
+
+@app.route('/delete_customer_details/<int:custom_id>/<int:id>')
+def delete_customer_details(custom_id, id):
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        if not user:
+            flash('User not found.', 'error')
+            return redirect('/login')
+        
+        customer = Customer.query.filter_by(id=custom_id, user_id=user.id).first()
+        if not customer:
+            flash('Customer not found.', 'error')
+            return redirect('/customers')
+
+        customer_data = CustomerDetail.query.filter_by(id=id, custom_id=custom_id).first()
+        if not customer_data:
+            flash('Customer data not found.', 'error')
+            return redirect('/customers')
+
+        try:
+            db.session.delete(customer_data)
+            db.session.commit()
+            flash('Customer data deleted successfully.', 'success')
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash('An error occurred while deleting the customer data. Please try again.', 'error')
+            print(f"SQLAlchemyError: {e}")
+        
+        return redirect(url_for('customers_detail', id=custom_id))
+    else:
+        flash('You need to login first.', 'error')
+        return redirect('/login')
+
 #About Page
 @app.route('/about')
 def about():
